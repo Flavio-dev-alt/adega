@@ -1,2 +1,40 @@
-Brahma;5;10 
-1;Skol;10;50.0
+1;Miolo Seleção Cabernet Sauvignon / Merlot;25;45.00
+2;Casa Valduga Villa-Lobos Cabernet Sauvignon;30;180.00
+3;Salton Talento;22;110.00
+4;Guaspari Vale da Pedra;28;130.00
+5;Pizzato Fausto Merlot;35;75.00
+6;Lidio Carraro Grande Ceifeiro;24;220.00
+7;Don Laurindo Tannat;27;95.00
+8;Brahma Chopp;38;6.50
+9;Skol Pilsen;39;6.00
+10;Colorado Appia (com mel);32;14.00
+11;Eisenbahn Pale Ale;29;12.00
+12;Heineken;36;9.00
+13;Baden Baden Witbier;23;16.00
+14;Lohn Bier Catharina Sour;26;18.00
+15;Johnnie Walker Red Label;31;90.00
+16;Johnnie Walker Black Label 12 Anos;22;160.00
+17;Ballantine's Finest;34;85.00
+18;Jack Daniel's Old No. 7;25;140.00
+19;Chivas Regal 12 Anos;28;170.00
+20;White Horse;33;75.00
+21;Coca-Cola Original;39;8.50
+22;Coca-Cola Sem Açúcar;37;8.50
+23;Guaraná Antarctica;35;7.50
+24;Guaraná Antarctica Zero;30;7.50
+25;Fanta Laranja;28;7.00
+26;Fanta Uva;26;7.00
+27;Fanta Guaraná;24;7.00
+28;Sprite;32;7.50
+29;Pepsi Original;31;7.00
+30;Pepsi Black;29;7.00
+31;Pepsi Twist;27;7.50
+32;Guaraná Jesus;23;8.00
+33;Schweppes Citrus;36;8.50
+34;Schweppes Tônica;34;8.50
+35;Kuat Guaraná;38;6.50
+36;Soda Limonada Antarctica;25;7.00
+37;Sukita Laranja;22;6.50
+38;Itubaína Retrô;33;7.50
+39;Cajuína São Geraldo;29;9.00
+40;Dolly Guaraná;37;5.50
