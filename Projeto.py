@@ -5,8 +5,23 @@ listaProdutos = []
 listaClientes = []
 listaVendas = []
 
-
 def cadastrarProdutos():
+    with open("produtos.txt", "a", encoding="utf-8") as arquivoProdutos:
+        produto = str(input("Digite o nome do produto: ")).strip()
+        qntProduto = int(input("Quantidade do produto: "))
+        valorUni = float(input("Valor unitário do produto: R$"))
+        
+        
+        id_produto = len(listaProdutos) + 1
+        
+        
+        listaProdutos.append([id_produto, produto, qntProduto, valorUni])
+        
+        
+        arquivoProdutos.write(f"{id_produto};{produto};{qntProduto};{valorUni}\n")
+        
+        print(f"\nProduto '{produto}' cadastrado com sucesso! (ID: {id_produto})")
+"""def cadastrarProdutos():
     with open("produtos.txt", "a", encoding="utf-8") as arquivoProdutos:
         produto = str(input("Digite o nome do produto: "))
         qntProduto = int(input("Quantidade do produto: "))
@@ -15,14 +30,59 @@ def cadastrarProdutos():
         listaProdutos.append(produto)
         listaProdutos.append(qntProduto)
         listaProdutos.append(valorUni)
-        arquivoProdutos.write(f"{produto};{qntProduto};{valorUni}\n")
+        arquivoProdutos.write(f"{produto};{qntProduto};{valorUni}\n")"""
                 
 def buscarProdutos():
     listaProdutos.clear()
     with open("produtos.txt", "r", encoding="utf-8") as arquivo:
         for linha in arquivo:
             listaProdutos.append(linha.strip())
-    print(f"Produtos que já estão carregados: {listaProdutos}")
+        print(""" 
+        LISTA DE PRODUTOS CADASTRADOS
+        1- Mostrar todos os produtos
+        2- buscar produto por ID
+        3- buscar produto por nome
+        0-voltar para o menu  Produtos""")
+        escolha = input("digite a opção desejada: ").strip()
+        if (escolha == "1"):
+             for produto in listaProdutos:
+                         produtoStr="id: ", produto.split(";")[0]
+                         produtoStr+=" | Nome: ", produto.split(";")[1]
+                         produtoStr+=" | Quantidade: ", produto.split(";")[2]
+                         produtoStr+=" | Valor unitário: R$", produto.split(";")[3]
+                         print(produtoStr)
+             
+        elif (escolha == "2"):
+             idProduto = input("Digite o ID do produto: ").strip()
+             for produto in listaProdutos:
+                 if produto.split(";")[0] == idProduto:
+                     produtoStr="id: ", produto.split(";")[0]
+                     produtoStr+=" | Nome: ", produto.split(";")[1]
+                     produtoStr+=" | Quantidade: ", produto.split(";")[2]
+                     produtoStr+=" | Valor unitário: R$", produto.split(";")[3]
+                     print(produtoStr)
+                     break
+        elif (escolha == "3"):
+             nomeProduto = input("Digite o nome do produto:").strip()
+             for produto in listaProdutos:
+                    if produto.split(";")[1].lower() == nomeProduto.lower():
+                        produtoStr="id: ", produto.split(";")[0]
+                        produtoStr+=" | Nome: ", produto.split(";")[1]
+                        produtoStr+=" | Quantidade: ", produto.split(";")[2]
+                        produtoStr+=" | Valor unitário: R$", produto.split(";")[3]
+                        print(produtoStr)
+                        break
+
+        elif (escolha == "0"):
+            print("voltando pro menu produtos...")
+            menuProdutos()
+
+                      
+       
+        else:
+            print("Opção inválida.")
+
+    
 
 
                  
