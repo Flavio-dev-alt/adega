@@ -6,4 +6,5 @@ git push --set-upstream origin main
 
 flavio e gustavo
 
+vamo tirar 10
 nosso projeto e uma adega 
