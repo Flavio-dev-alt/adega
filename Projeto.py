@@ -70,8 +70,15 @@ def buscarProdutos():
                         produtoStr+=" | Nome: ", produto.split(";")[1]
                         produtoStr+=" | Quantidade: ", produto.split(";")[2]
                         produtoStr+=" | Valor unitário: R$", produto.split(";")[3]
-                        print(produtoStr)
+                        print(f"Produto encontrado: {nomeProduto in produtoStr}")
                         break
+                        
+                        
+                    else:
+                        print("Produto não encontrado.")
+                        break
+                        
+                        
 
         elif (escolha == "0"):
             print("voltando pro menu produtos...")
@@ -80,7 +87,7 @@ def buscarProdutos():
                       
        
         else:
-            print("Opção inválida.")
+            print("Opção inválida")
 
     
 
