@@ -31,66 +31,68 @@ def cadastrarProdutos():
         listaProdutos.append(qntProduto)
         listaProdutos.append(valorUni)
         arquivoProdutos.write(f"{produto};{qntProduto};{valorUni}\n")"""
-                
 def buscarProdutos():
     listaProdutos.clear()
+    
+    # Abre e lê o arquivo direto para a memória RAM
     with open("produtos.txt", "r", encoding="utf-8") as arquivo:
         for linha in arquivo:
             listaProdutos.append(linha.strip())
-        print(""" 
-        LISTA DE PRODUTOS CADASTRADOS
-        1- Mostrar todos os produtos
-        2- buscar produto por ID
-        3- buscar produto por nome
-        0-voltar para o menu  Produtos""")
-        escolha = input("digite a opção desejada: ").strip()
-        if (escolha == "1"):
-             for produto in listaProdutos:
-                         produtoStr="id: ", produto.split(";")[0]
-                         produtoStr+=" | Nome: ", produto.split(";")[1]
-                         produtoStr+=" | Quantidade: ", produto.split(";")[2]
-                         produtoStr+=" | Valor unitário: R$", produto.split(";")[3]
-                         print(produtoStr)
-             
-        elif (escolha == "2"):
-             idProduto = input("Digite o ID do produto: ").strip()
-             for produto in listaProdutos:
-                 if produto.split(";")[0] == idProduto:
-                     produtoStr="id: ", produto.split(";")[0]
-                     produtoStr+=" | Nome: ", produto.split(";")[1]
-                     produtoStr+=" | Quantidade: ", produto.split(";")[2]
-                     produtoStr+=" | Valor unitário: R$", produto.split(";")[3]
-                     print(produtoStr)
-                     break
-        elif (escolha == "3"):
-             nomeProduto = input("Digite o nome do produto:").strip()
-             for produto in listaProdutos:
-                    if produto.split(";")[1].lower() == nomeProduto.lower():
-                        produtoStr="id: ", produto.split(";")[0]
-                        produtoStr+=" | Nome: ", produto.split(";")[1]
-                        produtoStr+=" | Quantidade: ", produto.split(";")[2]
-                        produtoStr+=" | Valor unitário: R$", produto.split(";")[3]
-                        print(f"Produto encontrado: {nomeProduto in produtoStr}")
-                        break
-                        
-                        
-                    else:
-                        print("Produto não encontrado.")
-                        break
-                        
-                        
 
-        elif (escolha == "0"):
-            print("voltando pro menu produtos...")
-            menuProdutos()
-
-                      
-       
-        else:
-            print("Opção inválida")
-
+    print(""" 
+    ---- LISTA DE PRODUTOS CADASTRADOS ----
+    1- Mostrar todos os produtos
+    2- Buscar produto por ID
+    3- Buscar produto por nome
+    0- Voltar para o menu Produtos""")
     
+    escolha = input("Digite a opção desejada: ").strip()
+    
+    # 1. Mostrar todos
+    if (escolha == "1"):
+        print("\n--- TODOS OS PRODUTOS ---")
+        for produto in listaProdutos:
+            dados = produto.split(";")
+            print(f"ID: {dados[0]} | Nome: {dados[1]} | Quantidade: {dados[2]} | Valor unitário: R${dados[3]}")
+    
+    # 2. Buscar por ID
+    elif (escolha == "2"):
+        idProduto = input("Digite o ID do produto: ").strip()
+        encontrado = False
+        
+        for produto in listaProdutos:
+            dados = produto.split(";")
+            if dados[0] == idProduto:
+                print("\n--- PRODUTO ENCONTRADO ---")
+                print(f"ID: {dados[0]} | Nome: {dados[1]} | Quantidade: {dados[2]} | Valor unitário: R${dados[3]}")
+                encontrado = True
+                break
+                
+        if not encontrado:
+            print("\nProduto não encontrado com esse ID.")
 
+    # 3. Buscar por Nome
+    elif (escolha == "3"):
+        nomeProduto = input("Digite o nome do produto: ").strip()
+        encontrado = False
+        
+        for produto in listaProdutos:
+            dados = produto.split(";")
+            if dados[1].lower() == nomeProduto.lower():
+                print("\n--- PRODUTO ENCONTRADO ---")
+                print(f"ID: {dados[0]} | Nome: {dados[1]} | Quantidade: {dados[2]} | Valor unitário: R${dados[3]}")
+                encontrado = True
+                break
+                
+        if not encontrado:
+            print("\nProduto não encontrado.")
+            
+    elif (escolha == "0"):
+        print("Voltando para o menu Produtos...")
+    else:
+        print("Opção inválida.")
+    
+"""def"""
 
                  
 
