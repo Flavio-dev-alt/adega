@@ -99,25 +99,42 @@ def atualizarProdutos():
             listaProdutos.append(linha.strip())
         idBusca = input("Digite o ID do produto que deseja atualizar: ").strip()
         encontrado = False
+        
         for i in range(len(listaProdutos)):
             dados = listaProdutos[i].split(";")
             if dados[0] == idBusca:
-                produtoencontrado = True
+                encontrado = True
+
                 print(f"\nproduto encontrado : ID: {dados[0]} | Nome: {dados[1]} | Quantidade: {dados[2]} | Valor unitario: R${dados[3]}")
+
                 novoNome = input(" Digite o novo nome do produto (ou aperte enter para manter o atual): ").strip()
+
                 novaQuantidade = input("Digite a nova quantidade do produto (ou aperte enter para manter a atual): ").strip()
+
                 novoValor = input("Digite o novo valor unitário do produto (ou aperte enter para manter o atual): ").strip()
                 if novoNome:
+
                     dados[1] = novoNome
-                elif novaQuantidade:
+                if novaQuantidade:
+
                     dados[2] = novaQuantidade
-                elif novoValor:
+                if novoValor:
+
                     dados[3] = novoValor
+
                 listaProdutos[i] = ";".join(dados)
-                with open("produtos.txt", "w", encoding="utf-8") as arquivo:
-                    for produto in listaProdutos:
-                        arquivo.write(produto + "\n") 
-                print("Produto atualizado com sucesso!")    
+                break
+
+        if not encontrado:
+            print("Produto não encontrado.")
+            return
+
+                    
+
+        with open("produtos.txt", "w", encoding="utf-8") as arquivo:
+            for produto in listaProdutos:
+                arquivo.write(produto + "\n")
+            print("Produto atualizado com sucesso!")
      
 
                  
