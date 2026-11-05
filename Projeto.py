@@ -5,32 +5,34 @@ listaProdutos = []
 listaClientes = []
 listaVendas = []
 
+listaProdutos = []
+
+# Carrega os produtos já salvos para a memória quando o programa inicia
+with open("produtos.txt", "r", encoding="utf-8") as arquivo:
+    for linha in arquivo:
+        linha = linha.strip()
+        if linha != "":
+            dados = linha.split(";")
+            id_p = int(dados[0])
+            nome = dados[1]
+            qnt = int(dados[2])
+            valor = float(dados[3])
+            listaProdutos.append([id_p, nome, qnt, valor])
+
 def cadastrarProdutos():
     with open("produtos.txt", "a", encoding="utf-8") as arquivoProdutos:
         produto = str(input("Digite o nome do produto: ")).strip()
         qntProduto = int(input("Quantidade do produto: "))
         valorUni = float(input("Valor unitário do produto: R$"))
         
-        
         id_produto = len(listaProdutos) + 1
         
-        
         listaProdutos.append([id_produto, produto, qntProduto, valorUni])
-        
         
         arquivoProdutos.write(f"{id_produto};{produto};{qntProduto};{valorUni}\n")
         
         print(f"\nProduto '{produto}' cadastrado com sucesso! (ID: {id_produto})")
-"""def cadastrarProdutos():
-    with open("produtos.txt", "a", encoding="utf-8") as arquivoProdutos:
-        produto = str(input("Digite o nome do produto: "))
-        qntProduto = int(input("Quantidade do produto: "))
-        valorUni = float(input("Valor unitário do produto: R$"))
-     
-        listaProdutos.append(produto)
-        listaProdutos.append(qntProduto)
-        listaProdutos.append(valorUni)
-        arquivoProdutos.write(f"{produto};{qntProduto};{valorUni}\n")"""
+
 def buscarProdutos():
     listaProdutos.clear()
     
@@ -95,7 +97,10 @@ def buscarProdutos():
 def atualizarProdutos():
      listaProdutos.clear()
      with open("produtos.txt", "r", encoding="utf-8") as arquivo:
+        print(""" \n---PRODUTOS CADRASTADOS---""")
         for linha in arquivo:
+            print(linha.strip())
+
             listaProdutos.append(linha.strip())
         idBusca = input("Digite o ID do produto que deseja atualizar: ").strip()
         encontrado = False
@@ -125,7 +130,7 @@ def atualizarProdutos():
                 listaProdutos[i] = ";".join(dados)
                 break
 
-        if not encontrado:
+        else:
             print("Produto não encontrado.")
             return
 
@@ -136,7 +141,34 @@ def atualizarProdutos():
                 arquivo.write(produto + "\n")
             print("Produto atualizado com sucesso!")
      
-
+def excluirProdutos():
+    listaProdutos.clear()
+    with open("produtos.txt", "r", encoding="utf-8") as arquivo:
+        for linha in arquivo:
+            listaProdutos.append(linha.strip())
+    
+    nomeBusca = input("Digite o nome do produto que deseja excluir: ").strip()
+    encontrado = False
+    
+    for i in range(len(listaProdutos)):
+        dados = listaProdutos[i].split(";")
+        if dados[1].lower() == nomeBusca.lower():
+            encontrado = True
+            print(f"\nProduto encontrado: ID: {dados[0]} | Nome: {dados[1]} | Quantidade: {dados[2]} | Valor unitário: R${dados[3]}")
+            confirmacao = input("Tem certeza que deseja excluir este produto? (s/n): ").strip().lower()
+            if confirmacao == "s":
+                del listaProdutos[i]
+                print("Produto excluído com sucesso!")
+            else:
+                print("Exclusão cancelada.")
+            break
+    
+    if not encontrado:
+        print("Produto não encontrado.")
+    
+    with open("produtos.txt", "w", encoding="utf-8") as arquivo:
+        for produto in listaProdutos:
+            arquivo.write(produto + "\n")
                  
 
 def menuRelatorios():
@@ -255,8 +287,9 @@ def menuProdutos():
             atualizarProdutos()
 
         elif (escolha == "4"):
+            excluirProdutos()
 
-            print("fazendo...")
+           
         elif (escolha == "0"):
 
             print("Voltando para o menu principal...")
@@ -271,7 +304,7 @@ def menuPrincipal():
     while (escolha != "0"):
         print("""
 ----- ADEGA DO FLÁVIO E GUSTAVO -----
-(MENU PRINCIPAL)
+---MENU PRINCIPAL---
 [1] - Produtos
 [2] - Clientes
 [3] - Vendas
