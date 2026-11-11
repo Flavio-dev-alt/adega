@@ -46,7 +46,7 @@ def cadastrarProdutos():
 
         qntProduto = int(input("Quantidade do produto: "))
         if qntProduto < 20:
-            print("A quantidade mínima de produtos é 20. Voltando para o Menu Produtos.")
+            print("A quantidade mínima de produtos é 20. voltando para o Menu Produtos.")
             return
 
         valorUni = float(input("Valor unitário do produto: R$"))
