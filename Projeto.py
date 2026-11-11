@@ -55,10 +55,17 @@ def cadastrarProdutos():
 
         lista = listarProdutos()
 
-        id_produto = len(lista) + 1
-
-       
-
+        # Lógica para garantir que o ID nunca se repita:
+        if len(lista) == 0:
+            id_produto = 1
+        else:
+            maior_id = 0
+            for p in lista:
+                #Compara o id de cada produto com maior_id. Se o iD do produto for maior, atualiza o maior_id.
+                if p[0] > maior_id:
+                    maior_id = p[0]
+            id_produto = maior_id + 1
+        
         arquivoProdutos.write(f"{id_produto};{produto};{qntProduto};{valorUni}\n")
 
        
@@ -116,17 +123,7 @@ def buscarProdutos():
 
                 print(f"ID: {produto[0]} | Nome: {produto[1]} | Quantidade: {produto[2]} | Valor unitário: R${produto[3]}")
 
-                
-
-                
-
-               
-
-  
-
         
-
-
 
     # 3. Buscar por Nome
 
@@ -150,12 +147,6 @@ def buscarProdutos():
 
                 break
 
-               
-
-        
-
-           
-
     elif (escolha == "0"):
 
         print("Voltando para o menu Produtos...")
@@ -167,14 +158,14 @@ def buscarProdutos():
    
 
 def atualizarProdutos():
-
+    
     produtos = listarProdutos()
 
     print(""" \n---PRODUTOS CADRASTADOS---""")
-
+    
     for produto in produtos:
 
-        print(produto)
+        print(f"ID: {produto[0]} | Nome: {produto[1]} | Quantidade: {produto[2]} | Valor unitário: R${produto[3]}")
 
     idBusca = input("Digite o ID do produto que deseja atualizar: ").strip()        
 
@@ -184,44 +175,34 @@ def atualizarProdutos():
 
         dados = produto
 
-        if dados[0] == int(idBusca):
+        if str(dados[0]) == idBusca:
 
             encontrado = True
 
-
-
+            
             print(f"\nproduto encontrado : ID: {dados[0]} | Nome: {dados[1]} | Quantidade: {dados[2]} | Valor unitario: R${dados[3]}")
 
-
-
+            
             novoNome = input(" Digite o novo nome do produto (ou aperte enter para manter o atual): ").strip()
 
-
-
-            novaQuantidade = input("Digite a nova quantidade do produto (ou aperte enter para manter a atual): ").strip()
-
-
+            novaQuantidade = input("Digite a nova quantidade do produto (ou aperte enter para manter a atual): ")
+            if int(novaQuantidade) <20:
+                print("A quantidade mínima de produtos é 20. voltando para o Menu Produtos.")
+                return
 
             novoValor = input("Digite o novo valor unitário do produto (ou aperte enter para manter o atual): ").strip()
 
             if novoNome:
-
-
-
+                
                     dados[1] = novoNome
 
             if novaQuantidade:
-
-
-
-                    dados[2] = novaQuantidade
-
+                
+                     dados[2] = int(novaQuantidade)
             if novoValor:
-
-
+                
 
                     dados[3] = novoValor
-
             break
 
     if not encontrado:
@@ -234,58 +215,52 @@ def atualizarProdutos():
 
     with open("produtos.txt", "w", encoding="utf-8") as arquivo:
 
-        for produto in listarProdutos():
+        for produto in produtos:
 
-            arquivo.write(produto + "\n")
+            arquivo.write(f"{produto[0]};{produto[1]};{produto[2]};{produto[3]}\n")
 
         print("Produto atualizado com sucesso!")
 
      
 
-def excluirProdutos():    
 
-    idBusca = input("Digite o ID do produto que deseja excluir: ").strip()
+def excluirProdutos():
+    produtos = listarProdutos()
 
+    print("\n--- PRODUTOS CADASTRADOS ---")
+    for p in produtos:
+        print(f"ID: {p[0]} | Nome: {p[1]} | Quantidade: {p[2]} | Valor unitário: R${p[3]}")
+
+    idBusca = input("\nDigite o ID do produto que deseja excluir: ").strip()
     encontrado = False
 
-   
-
-    for i in range(len(listarProdutos())):
-
-        dados = listarProdutos()[i].split(";")
-
-        if dados[0] == idBusca:
-
+    # Percorre a lista de produtos item por item
+    for p in produtos:
+        # Garante a comparação correta convertendo o ID para texto
+        if str(p[0]) == idBusca:
             encontrado = True
-
-            print(f"\nProduto encontrado: ID: {dados[0]} | Nome: {dados[1]} | Quantidade: {dados[2]} | Valor unitário: R${dados[3]}")
-
+            print(f"\nProduto encontrado: ID: {p[0]} | Nome: {p[1]} | Quantidade: {p[2]} | Valor unitário: R${p[3]}")
+            
             confirmacao = input("Tem certeza que deseja excluir este produto? (s/n): ").strip().lower()
-
+            
             if confirmacao == "s":
-
+                # Remove o produto encontrado da lista na memória
+                produtos.remove(p)
+                
+                # Reescreve o arquivo apenas com os produtos restantes
                 with open("produtos.txt", "w", encoding="utf-8") as arquivo:
-
-                    for produto in listarProdutos():
-
-                        if produto[0] != idBusca:
-
-                            arquivo.write(produto + "\n")
-
+                    for prod in produtos:
+                        linha = f"{prod[0]};{prod[1]};{prod[2]};{prod[3]}\n"
+                        arquivo.write(linha)
+                
                 print("Produto excluído com sucesso!")
-
             else:
-
                 print("Exclusão cancelada.")
-
+            
             break
 
-   
-
     if not encontrado:
-
         print("Produto não encontrado.")
-
                  
 
 
@@ -554,19 +529,21 @@ def menuPrincipal():
 
         print("""
 
------ ADEGA DO FLÁVIO E GUSTAVO -----
+======= Ａｄｅｇａ Ｃｏｒｄｅｎｎｅ =======
+        __________________________
+        ==== MENU PRINCIPAL ====
+        __________________________
 
----MENU PRINCIPAL---
+           [1] - Produtos
 
-[1] - Produtos
+           [2] - Clientes
 
-[2] - Clientes
+           [3] - Vendas
 
-[3] - Vendas
+           [4] - Relatórios
 
-[4] - Relatórios
-
-[0] - Sair""")
+           [0] - Sair 
+ ========================================""")
 
         escolha = input("Escolha: ").strip()
 
