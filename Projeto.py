@@ -1,6 +1,6 @@
-#adega ="c:\\Users\\gusta\\Downloads\\Projeto.py"
+adega ="c:\\Users\\gusta\\Downloads\\Projeto.py"
 
-arquivo = open("adega", "a", encoding="utf-8")
+arquivo = open(adega, "a", encoding="utf-8")
 
 listaVendas = []
 
