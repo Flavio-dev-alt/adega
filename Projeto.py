@@ -1,15 +1,161 @@
-adega ="c:\\Users\\gusta\\Downloads\\Projeto.py"
+#adega ="c:\\Users\\gusta\\Downloads\\Projeto.py"
 
-arquivo = open(adega, "a", encoding="utf-8")
-
-listaClientes = []
+arquivo = open("adega", "a", encoding="utf-8")
 
 listaVendas = []
 
+def listarClientes():
+    clientes = []
+
+    with open("clientes.txt", "r", encoding="utf-8") as arquivo_listar_clientes:
+        for linha in arquivo_listar_clientes:
+            if linha.strip():
+                dados_cli = linha.split(";")
+                id_cli = int(dados_cli[0])
+                nome_cli = dados_cli[1]
+                idade_cli = dados_cli[2].strip()
+
+                clientes.append([id_cli, nome_cli, idade_cli])
+    
+    return (clientes)
+
+def cadastrarClientes():
+    with open("clientes.txt", "a", encoding="utf-8") as arquivo_cadastrar_clientes:
+        nome = input("Nome do cliente: ")
+        idade = int(input(f"Idade do(a) {nome}: "))
+        if (idade < 18):
+            print("Cliente não pode ser cadastrado. Apenas se tiver 18 anos ou mais.")
+            print("Voltando para o Menu Clientes...")
+            return
+
+        listaC = listarClientes()
+
+        if len(listaC) == 0:
+            id_cliente = 1
+        else:
+            maior_id = 0
+            for cliente in listaC:
+                if cliente[0] > maior_id:
+                    maior_id = cliente[0]
+            id_cliente = maior_id + 1
+                
+        arquivo_cadastrar_clientes.write(f"{id_cliente};{nome};{idade}\n")
+        print(f"\nCliente '{nome}' cadastrado com sucesso! (ID: {id_cliente})")
+
+def buscarClientes():
+    print("""
+    ---- OPÇÕES DE BUSCA ----
+    1 - Mostrar todos os clientes cadastrados
+    2 - Buscar clientes por ID
+    3 - Buscar clientes por nome
+    0 - Voltar para o Menu Clientes""")
+
+    escolha = input("Digite a opção desejada: ").strip()
+
+    #mostrar todos
+    if (escolha == "1"):
+        print("""\n---CLIENTES CADRASTADOS---""")
+        for cliente in listarClientes():
+            print(f"ID: {cliente[0]} | Nome: {cliente[1]} | Idade: {cliente[2]}")
+
+    #buscar por id
+    elif (escolha == "2"):
+        idCliente = int(input("Digite o ID do cliente: ").strip())
+        for cliente in listarClientes():
+            if (cliente[0] == idCliente):
+                print("\n--- CLIENTE ENCONTRADO ---")
+                print(f"ID: {cliente[0]} | Nome: {cliente[1]} | Idade: {cliente[2]}")
+                break
+        else:
+            print("\nID DE CLIENTE NÃO ENCONTRADO!")
+            print("Voltando para o Menu Clientes...")
+            return
+
+    #buscar por nome
+    elif (escolha == "3"):
+        nomeCliente = input("Digite o nome do cliente: ").strip()
+        for cliente in listarClientes():
+            if (nomeCliente.lower() == cliente[1].lower()):
+                print("\n--- CLIENTE ENCONTRADO ---")
+                print(f"ID: {cliente[0]} | Nome: {cliente[1]} | Idade: {cliente[2]}")
+                break
+        else:
+            print("\nNOME DO CLIENTE NÃO ENCONTRADO!")
+            print("Voltando para o Menu Clientes...")
+            return
+
+def atualizarClientes():
+    clientes = listarClientes()
+
+    print("""\n---CLIENTES CADRASTADOS---""")
+    for cliente in clientes:
+        print(f"ID: {cliente[0]} | Nome: {cliente[1]}| Idade: {cliente[2]}")
+
+    idBuscaCliente = input("Digite o ID do cliente que quer atualizar: ").strip()
+
+    for cliente in clientes:
+        if (int(idBuscaCliente) == int(cliente[0])):
+            print("----CLIENTE ENCONTRADO----")
+            novoNome = input("Novo nome: ")
+            
+            novaIdade = int(input("Nova idade: "))
+            if (novaIdade < 18):
+                print("Só pode cadastrar maiores ou iguais a 18.")
+                print("Voltando para o Menu Clientes...")
+                return
+
+            if (novoNome != ""):
+                cliente[1] = novoNome
+                print(f"Nome atualizado para: {novoNome}")
+            if (novaIdade >= 18):
+                cliente[2] = novaIdade
+            break 
+    else:
+        print("ID não encontrado")
+        print("Voltando para o Menu Clientes...")
+        return
+
+    with open("clientes.txt", "w", encoding="utf-8") as arquivo_atualizar_clientes:
+        for cliente in clientes:
+            arquivo_atualizar_clientes.write(f"{cliente[0]};{cliente[1]};{cliente[2]}\n")
+            
+            
+def excluirClientes():
+    clientes = listarClientes()
+
+    print("\n--- CLIENTES CADASTRADOS ---")
+    for cliente in clientes:
+        print(f"ID: {cliente[0]} | Nome: {cliente[1]} | Idade: {cliente[2]}")
+
+    idBuscaCliente = input("\nDigite o ID do cliente que deseja excluir: ").strip()
+    encontrado = False
+    # percorre a lista de clientes
+    for cliente in clientes:
+        # pra não  haver erro em comparação, de id para string
+        if str(cliente[0]) == idBuscaCliente:
+            encontrado = True
+            print(f"\nCliente encontrado: ID: {cliente[0]} | Nome: {cliente[1]} | Idade: {cliente[2]}")
+
+            confirmacao = input("Tem certeza que deseja excluir este cliente? (s/n): ").strip().lower()
+            
+            if confirmacao == "s":
+                clientes.remove(cliente)
+                # exclui o cliente do arquivo, e lista os restantes , reescrevendoo 
+                with open("clientes.txt", "w", encoding="utf-8") as arquivo_excluir_clientes:
+                    for cli in clientes:
+                        arquivo_excluir_clientes.write(f"{cli[0]};{cli[1]};{cli[2]}\n")
+                
+                print("Cliente excluído com sucesso!")
+            else:
+                print("Exclusão cancelada.")
+            
+            break
+
+    if not encontrado:
+        print("Cliente não encontrado.")
 
 #ESSA FUNÇÃO LISTA OS PRODUTOS CADASTRADOS NO ARQUIVO "produtos.txt" E RETORNA UMA LISTA COM OS DADOS DE CADA PRODUTO.
 def listarProdutos():
-
     produtos = []
 
     with open("produtos.txt", "r", encoding="utf-8") as arquivo:
@@ -18,7 +164,7 @@ def listarProdutos():
 
         for linha in arquivo:
 
-            if linha != "":
+            if linha.strip():
 
                # print(linha.strip())
 
@@ -34,7 +180,7 @@ def listarProdutos():
 
                 produtos.append([id_p, nome, qnt, valor])
 
-    return produtos
+    return (produtos)
 
 
 
@@ -53,17 +199,17 @@ def cadastrarProdutos():
         
         
 
-        lista = listarProdutos()
+        listaP = listarProdutos()
 
         # Lógica para garantir que o ID nunca se repita:
-        if len(lista) == 0:
+        if len(listaP) == 0:
             id_produto = 1
         else:
             maior_id = 0
-            for p in lista:
+            for produto in listaP:
                 #Compara o id de cada produto com maior_id. Se o iD do produto for maior, atualiza o maior_id.
-                if p[0] > maior_id:
-                    maior_id = p[0]
+                if produto[0] > maior_id:
+                    maior_id = produto[0]
             id_produto = maior_id + 1
         
         arquivoProdutos.write(f"{id_produto};{produto};{qntProduto};{valorUni}\n")
@@ -78,81 +224,54 @@ def buscarProdutos():
 
     print("""
 
-    ---- LISTA DE PRODUTOS CADASTRADOS ----
+    ---- OPÇÕES DE BUSCA ----
 
-    1- Mostrar todos os produtos
+    1 - Mostrar todos os produtos
 
-    2- Buscar produto por ID
+    2 - Buscar produto por ID
 
-    3- Buscar produto por nome
+    3 - Buscar produto por nome
 
-    0- Voltar para o menu Produtos""")
+    0 - Voltar para o Menu Produtos""")
 
    
 
     escolha = input("Digite a opção desejada: ").strip()
 
-   
-
-    # 1. Mostrar todos
-
+    #mostrar todos
     if (escolha == "1"):
-        print(""" \n---PRODUTOS CADRASTADOS---""")
-
-        
+        print(""" \n---PRODUTOS CADRASTADOS---""")        
         for produto in listarProdutos():
-            
             print(f"ID: {produto[0]} | Nome: {produto[1]} | Quantidade: {produto[2]} | Valor unitário: R${produto[3]}")
-        
-   
-
-    # 2. Buscar por ID
-
+    
+    #buscar por id
     elif (escolha == "2"):
-
-        idProduto = int(input("Digite o ID do produto: ").strip())
-
+        idProduto = (input("Digite o ID do produto: ").strip())
         for produto in listarProdutos():
-
-           
-
             if produto[0] == idProduto:
-                
-
                 print("\n--- PRODUTO ENCONTRADO ---")
-
                 print(f"ID: {produto[0]} | Nome: {produto[1]} | Quantidade: {produto[2]} | Valor unitário: R${produto[3]}")
-
-        
-
-    # 3. Buscar por Nome
-
+            else:
+                print("\nPRODUTO NÃO ENCONTRADO!")
+                print("Voltando para o Menu Produtos...")
+                return
+                         
+    #buscar por nome
     elif (escolha == "3"):
-
         nomeProduto = input("Digite o nome do produto: ").strip()
-
-        
-
-       
-
         for produto in listarProdutos():
-
             if produto[1].lower() == nomeProduto.lower():
-
                 print("\n--- PRODUTO ENCONTRADO ---")
-
                 print(f"ID: {produto[0]} | Nome: {produto[1]} | Quantidade: {produto[2]} | Valor unitário: R${produto[3]}")
-
-                
-
-                break
+            else:
+                print("\nPRODUTO NÃO ENCONTRADO!")
+                print("Voltando para o Menu Produtos...")
+                return
 
     elif (escolha == "0"):
-
         print("Voltando para o menu Produtos...")
 
     else:
-
         print("Opção inválida.")
 
    
@@ -180,7 +299,7 @@ def atualizarProdutos():
             encontrado = True
 
             
-            print(f"\nproduto encontrado : ID: {dados[0]} | Nome: {dados[1]} | Quantidade: {dados[2]} | Valor unitario: R${dados[3]}")
+            print(f"\nProduto encontrado : ID: {dados[0]} | Nome: {dados[1]} | Quantidade: {dados[2]} | Valor unitario: R${dados[3]}")
 
             
             novoNome = input(" Digite o novo nome do produto (ou aperte enter para manter o atual): ").strip()
@@ -390,67 +509,37 @@ def menuVendas():
 
 
 def menuClientes():
-
     escolha = ""
 
     while (escolha != "0"):
-
         print("""
-
 ----- CLIENTES -----
 
 [1] - Cadastrar
-
-[2] - Atualizar
-
-[3] - Buscar
-
+[2] - Buscar
+[3] - Atualizar
 [4] - Excluir
-
 [0] - Voltar para o menu principal""")
-
         escolha = input("Escolha: ").strip()
 
-
-
         if (escolha == "1"):
-
-
-
-            print("fazendo...")
-
-
+            cadastrarClientes()
 
         elif (escolha == "2"):
-
-            print("fazendo...")
-
-
+            buscarClientes()
 
         elif (escolha == "3"):
+            atualizarClientes()
 
+        elif (escolha == "4"): 
+            excluirClientes()
 
-
-            print("fazendo...")
-
-        elif (escolha == "4"):
-
-             
-
-             print("fazendo...")
-
-        elif (escolha == "0"):
-
-           
-
+        elif (escolha == "0"):           
             print("Voltando para o menu principal...")
-
             break
 
         else:
-
             print("Opção inválida.")      
-
             continue  
 
 
