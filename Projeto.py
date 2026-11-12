@@ -1,6 +1,6 @@
-adega ="c:\\Users\\gusta\\Downloads\\Projeto.py"
+#adega ="c:\\Users\\gusta\\Downloads\\Projeto.py"
 
-arquivo = open(adega, "a", encoding="utf-8")
+arquivo = open("adega", "a", encoding="utf-8")
 
 listaVendas = []
 
@@ -9,11 +9,11 @@ def listarClientes():
 
     with open("clientes.txt", "r", encoding="utf-8") as arquivo_listar_clientes:
         for linha in arquivo_listar_clientes:
-            if linha != "":
+            if linha.strip():
                 dados_cli = linha.split(";")
                 id_cli = int(dados_cli[0])
                 nome_cli = dados_cli[1]
-                idade_cli = dados_cli[2]
+                idade_cli = dados_cli[2].strip()
 
                 clientes.append([id_cli, nome_cli, idade_cli])
     
@@ -59,17 +59,63 @@ def buscarClientes():
             print(f"ID: {cliente[0]} | Nome: {cliente[1]} | Idade: {cliente[2]}")
 
     #buscar por id
-    if (escolha == "2"):
+    elif (escolha == "2"):
         idCliente = int(input("Digite o ID do cliente: ").strip())
         for cliente in listarClientes():
             if (cliente[0] == idCliente):
                 print("\n--- CLIENTE ENCONTRADO ---")
                 print(f"ID: {cliente[0]} | Nome: {cliente[1]} | Idade: {cliente[2]}")
-            else:
-                print("\nID DE CLIENTE NÃO ENCONTRADO!")
+                break
+        else:
+            print("\nID DE CLIENTE NÃO ENCONTRADO!")
+            print("Voltando para o Menu Clientes...")
+            return
+
+    #buscar por nome
+    elif (escolha == "3"):
+        nomeCliente = input("Digite o nome do cliente: ").strip()
+        for cliente in listarClientes():
+            if (nomeCliente.lower() == cliente[1].lower()):
+                print("\n--- CLIENTE ENCONTRADO ---")
+                print(f"ID: {cliente[0]} | Nome: {cliente[1]} | Idade: {cliente[2]}")
+                break
+        else:
+            print("\nNOME DO CLIENTE NÃO ENCONTRADO!")
+            print("Voltando para o Menu Clientes...")
+            return
+
+def atualizarClientes():
+    clientes = listarClientes()
+
+    print("""\n---CLIENTES CADRASTADOS---""")
+    for cliente in clientes:
+        print(f"ID: {cliente[0]} | Nome: {cliente[1]}| Idade: {cliente[2]}")
+
+    idBuscaCliente = input("Digite o ID do cliente que quer atualizar: ").strip()
+
+    for cliente in clientes:
+        if (int(idBuscaCliente) == int(cliente[0])):
+            print("----CLIENTE ENCONTRADO----")
+            novoNome = input("Novo nome: ")
+            novaIdade = int(input("Nova idade: "))
+            if (novaIdade < 18):
+                print("Só pode cadastrar maiores ou iguais a 18.")
                 print("Voltando para o Menu Clientes...")
                 return
 
+            if (novoNome != ""):
+                cliente[1] = novoNome
+            if (novaIdade >= 18):
+                cliente[2] = novaIdade
+            break 
+    else:
+        print("ID não encontrado")
+        print("Voltando para o Menu Clientes...")
+        return
+
+    with open("clientes.txt", "w", encoding="utf-8") as arquivo_atualizar_clientes:
+        for cliente in clientes:
+            arquivo_atualizar_clientes.write(f"{cliente[0]};{cliente[1]};{cliente[2]}\n")
 
 #ESSA FUNÇÃO LISTA OS PRODUTOS CADASTRADOS NO ARQUIVO "produtos.txt" E RETORNA UMA LISTA COM OS DADOS DE CADA PRODUTO.
 def listarProdutos():
@@ -81,7 +127,7 @@ def listarProdutos():
 
         for linha in arquivo:
 
-            if linha != "":
+            if linha.strip():
 
                # print(linha.strip())
 
@@ -216,7 +262,7 @@ def atualizarProdutos():
             encontrado = True
 
             
-            print(f"\nproduto encontrado : ID: {dados[0]} | Nome: {dados[1]} | Quantidade: {dados[2]} | Valor unitario: R${dados[3]}")
+            print(f"\nProduto encontrado : ID: {dados[0]} | Nome: {dados[1]} | Quantidade: {dados[2]} | Valor unitario: R${dados[3]}")
 
             
             novoNome = input(" Digite o novo nome do produto (ou aperte enter para manter o atual): ").strip()
@@ -446,7 +492,7 @@ def menuClientes():
             buscarClientes()
 
         elif (escolha == "3"):
-            print("fazendo...")
+            atualizarClientes()
 
         elif (escolha == "4"): 
             print("fazendo...")
