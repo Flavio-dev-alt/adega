@@ -2,14 +2,78 @@
 
 arquivo = open("adega", "a", encoding="utf-8")
 
-listaVendas = []
+
+def listarVendas():
+    vendas = []
+
+    with open("vendas.txt", "r", encoding="utf-8") as arquivo_listar_vendas:
+        for linha in arquivo_listar_vendas:
+            if (linha.strip()):
+                dados_venda = linha.split(";")
+                id_ven = int(dados_venda[0])
+                nome_cli_ven = dados_venda[1]
+                produto_ven = dados_venda[2]
+                qnt_produto_ven = dados_venda[3]
+                valor_total_ven = dados_venda[4]
+
+                vendas.append([id_ven, nome_cli_ven, produto_ven, qnt_produto_ven, valor_total_ven])
+
+    return (vendas)
+
+def cadastrarVendas():
+    print("Clientes cadastrados:")
+    for cliente in listarClientes():
+        print(f"ID: {cliente[0]} | Nome: {cliente[1]} | Idade: {cliente[2]}")
+        
+    id_cliente = input("Digite o ID do cliente que vai comprar: ").strip()
+    
+    for cliente in listarClientes():
+        if (int(id_cliente) == int(cliente[0])):
+            print("Cliente encontrado")
+            break
+    else:
+        print("Cliente não encontrado")
+        return 
+
+    print("Produtos:")
+    for produto in listarProdutos():
+        print(f"ID: {produto[0]} | Produto: {produto[1]} | Qnt: {produto[2]} | Valor: R$ {produto[3]}")
+        
+    nome_produto = input("Digite o nome do produto que vai comprar: ").strip()
+
+    listaV = listarVendas()
+
+    if len(listaV) == 0:
+        id_ven = 1
+    else:
+        maior_id = 0
+        for venda in listaV:
+            if venda[0] > maior_id:
+                maior_id = venda[0]
+        id_ven = maior_id + 1
+
+    with open("vendas.txt", "a", encoding="utf-8") as arquivo_cadastrar_vendas:
+        for produto in listarProdutos():
+            if (nome_produto.lower() == produto[1].lower()):
+                print("Produto encontrado")
+                qnt_produto = int(input(f"Digite a quantidade de {nome_produto} você quer levar: "))
+                
+                if (qnt_produto > int(produto[2])):
+                    print("Não há estoque")
+                    return
+                
+                arquivo_cadastrar_vendas.write(f"{id_ven};{produto[1]};{qnt_produto}\n")
+                print("Venda cadastrada")
+                break
+        else:
+            print("Produto não encontrado.")
 
 def listarClientes():
     clientes = []
 
     with open("clientes.txt", "r", encoding="utf-8") as arquivo_listar_clientes:
         for linha in arquivo_listar_clientes:
-            if linha.strip():
+            if (linha.strip()):
                 dados_cli = linha.split(";")
                 id_cli = int(dados_cli[0])
                 nome_cli = dados_cli[1]
@@ -116,6 +180,40 @@ def atualizarClientes():
     with open("clientes.txt", "w", encoding="utf-8") as arquivo_atualizar_clientes:
         for cliente in clientes:
             arquivo_atualizar_clientes.write(f"{cliente[0]};{cliente[1]};{cliente[2]}\n")
+            
+            
+def excluirClientes():
+    clientes = listarClientes()
+
+    print("\n--- CLIENTES CADASTRADOS ---")
+    for cliente in clientes:
+        print(f"ID: {cliente[0]} | Nome: {cliente[1]} | Idade: {cliente[2]}")
+
+    idBuscaCliente = input("\nDigite o ID do cliente que deseja excluir: ").strip()
+    encontrado = False
+
+    for cliente in clientes:
+        if str(cliente[0]) == idBuscaCliente:
+            encontrado = True
+            print(f"\nCliente encontrado: ID: {cliente[0]} | Nome: {cliente[1]} | Idade: {cliente[2]}")
+
+            confirmacao = input("Tem certeza que deseja excluir este cliente? (s/n): ").strip().lower()
+            
+            if confirmacao == "s":
+                clientes.remove(cliente)
+                
+                with open("clientes.txt", "w", encoding="utf-8") as arquivo_excluir_clientes:
+                    for cli in clientes:
+                        arquivo_excluir_clientes.write(f"{cli[0]};{cli[1]};{cli[2]}\n")
+                
+                print("Cliente excluído com sucesso!")
+            else:
+                print("Exclusão cancelada.")
+            
+            break
+
+    if not encontrado:
+        print("Cliente não encontrado.")
 
 #ESSA FUNÇÃO LISTA OS PRODUTOS CADASTRADOS NO ARQUIVO "produtos.txt" E RETORNA UMA LISTA COM OS DADOS DE CADA PRODUTO.
 def listarProdutos():
@@ -148,39 +246,42 @@ def listarProdutos():
 
 
 def cadastrarProdutos():
+    produto = input("Digite o nome do produto: ").strip()
+    qnt_ProdutoStr = input("Quantidade do produto: ").strip()
+    
+    if qnt_ProdutoStr == "":
+        print("Quantidade inválida.")
+        return
+        
+    qntProduto = int(qnt_ProdutoStr)
+    if qntProduto < 20:
+        print("A quantidade mínima de produtos é 20. Voltando para o Menu Produtos.")
+        return
 
+    # Replace previne erro se o usuário digitar vírgula no lugar de ponto
+    valorUniStr = input("Valor unitário do produto: R$").strip().replace(",", ".")
+    if valorUniStr == "":
+        print("Valor inválido.")
+        return
+        
+    valorUni = float(valorUniStr)
+    
+    listaP = listarProdutos()
+
+    if len(listaP) == 0:
+        id_produto = 1
+    else:
+        maior_id = 0
+        for p in listaP:
+            if p[0] > maior_id:
+                maior_id = p[0]
+        id_produto = maior_id + 1
+    
+    # ABRE O ARQUIVO SÓ NO FINAL PARA SALVAR
     with open("produtos.txt", "a", encoding="utf-8") as arquivoProdutos:
-
-        produto = str(input("Digite o nome do produto: ")).strip()
-
-        qntProduto = int(input("Quantidade do produto: "))
-        if qntProduto < 20:
-            print("A quantidade mínima de produtos é 20. voltando para o Menu Produtos.")
-            return
-
-        valorUni = float(input("Valor unitário do produto: R$"))
-        
-        
-
-        listaP = listarProdutos()
-
-        # Lógica para garantir que o ID nunca se repita:
-        if len(listaP) == 0:
-            id_produto = 1
-        else:
-            maior_id = 0
-            for produto in listaP:
-                #Compara o id de cada produto com maior_id. Se o iD do produto for maior, atualiza o maior_id.
-                if produto[0] > maior_id:
-                    maior_id = produto[0]
-            id_produto = maior_id + 1
-        
         arquivoProdutos.write(f"{id_produto};{produto};{qntProduto};{valorUni}\n")
 
-       
-
-        print(f"\nProduto '{produto}' cadastrado com sucesso! (ID: {id_produto})")
-
+    print(f"\nProduto '{produto}' cadastrado com sucesso! (ID: {id_produto})")
 
 
 def buscarProdutos():
@@ -211,13 +312,14 @@ def buscarProdutos():
     elif (escolha == "2"):
         idProduto = (input("Digite o ID do produto: ").strip())
         for produto in listarProdutos():
-            if produto[0] == idProduto:
+            if str(produto[0]) == idProduto:
                 print("\n--- PRODUTO ENCONTRADO ---")
                 print(f"ID: {produto[0]} | Nome: {produto[1]} | Quantidade: {produto[2]} | Valor unitário: R${produto[3]}")
-            else:
-                print("\nPRODUTO NÃO ENCONTRADO!")
-                print("Voltando para o Menu Produtos...")
-                return
+                break
+        else:
+            print("\nPRODUTO NÃO ENCONTRADO!")
+            print("Voltando para o Menu Produtos...")
+            
                          
     #buscar por nome
     elif (escolha == "3"):
@@ -226,10 +328,12 @@ def buscarProdutos():
             if produto[1].lower() == nomeProduto.lower():
                 print("\n--- PRODUTO ENCONTRADO ---")
                 print(f"ID: {produto[0]} | Nome: {produto[1]} | Quantidade: {produto[2]} | Valor unitário: R${produto[3]}")
-            else:
-                print("\nPRODUTO NÃO ENCONTRADO!")
-                print("Voltando para o Menu Produtos...")
-                return
+                break
+    
+        else:
+            print("\nPRODUTO NÃO ENCONTRADO!")
+            print("Voltando para o Menu Produtos...")
+        
 
     elif (escolha == "0"):
         print("Voltando para o menu Produtos...")
@@ -268,6 +372,8 @@ def atualizarProdutos():
             novoNome = input(" Digite o novo nome do produto (ou aperte enter para manter o atual): ").strip()
 
             novaQuantidade = input("Digite a nova quantidade do produto (ou aperte enter para manter a atual): ")
+            if novaQuantidade == "":
+                novaQuantidade = dados[2]
             if int(novaQuantidade) <20:
                 print("A quantidade mínima de produtos é 20. voltando para o Menu Produtos.")
                 return
@@ -429,11 +535,8 @@ def menuVendas():
 
         escolha = input("Escolha: ").strip()
 
-
-
         if (escolha == "1"):
-
-                print("fazendo...")
+            cadastrarVendas()
 
 
 
@@ -495,7 +598,7 @@ def menuClientes():
             atualizarClientes()
 
         elif (escolha == "4"): 
-            print("fazendo...")
+            excluirClientes()
 
         elif (escolha == "0"):           
             print("Voltando para o menu principal...")
