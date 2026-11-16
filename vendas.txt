@@ -1,1 +1,2 @@
-1;Arroz;19
+1;Gustavo;Feijão;10;100.0
+2;Flávio;Arroz;21;210.0

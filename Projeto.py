@@ -2,6 +2,19 @@
 
 arquivo = open("adega", "a", encoding="utf-8")
 
+def relatoriosProdutos():
+    print("Produtos em estoque:")
+    for produto in listarProdutos():
+        if (produto[2] > 0):
+            print(f"ID: {produto[0]} | Nome: {produto[1]} | Quantidade: {produto[2]} | Valor unitário: R${produto[3]}")
+
+def relatoriosVendas():
+    soma = 0
+    print("Vendas realizadas:")
+    for venda in listarVendas():
+        print(f"ID: {venda[0]} | Cliente: {venda[1]} | Produto: {venda[2]} | Quantidade: {venda[3]} | Valor total: R$ {venda[4]}")
+        soma += float(venda[4])
+    print(f"Valor total das vendas: R${soma:.2f}")
 
 def listarVendas():
     vendas = []
@@ -13,12 +26,120 @@ def listarVendas():
                 id_ven = int(dados_venda[0])
                 nome_cli_ven = dados_venda[1]
                 produto_ven = dados_venda[2]
-                qnt_produto_ven = dados_venda[3]
-                valor_total_ven = dados_venda[4]
+                qnt_produto_ven = int(dados_venda[3])
+                valor_total_ven = float(dados_venda[4])
 
                 vendas.append([id_ven, nome_cli_ven, produto_ven, qnt_produto_ven, valor_total_ven])
 
     return (vendas)
+
+def buscarVendas():
+    print("""
+    ---- OPÇÕES DE BUSCA ----
+    1 - Mostrar todas as vendas cadastradas
+    2 - Buscar vendas por ID
+    3 - Buscar vendas por nome do cliente
+    0 - Voltar para o Menu Vendas""")
+
+    escolha = input("Digite a opção desejada: ").strip()
+    vendas = listarVendas()
+    # pra mostrar todos 
+    if (escolha == "1"):
+        print("""\n---VENDAS CADRASTADAS---""")
+        for venda in vendas:
+            print(f"ID: {venda[0]} | Cliente: {venda[1]} | Produto: {venda[2]} | Quantidade: {venda[3]} | Valor total: R$ {venda[4]}")
+
+    #buscar por id
+    elif (escolha == "2"):
+        idVenda =input("Digite o ID da venda: ").strip()
+        for venda in vendas:
+            if (str(venda[0]) == idVenda):
+                print("\n--- VENDA ENCONTRADA ---")
+                print(f"ID: {venda[0]} | Cliente: {venda[1]} | Produto: {venda[2]} | Quantidade: {venda[3]} | Valor total: R$ {venda[4]}")
+                break
+        else:
+            print("\nID DE VENDA NÃO ENCONTRADO!")
+            print("Voltando para o Menu Vendas...")
+            return
+
+    # buscar pelo nome  
+    elif (escolha == "3"):
+        nomeClienteVenda = input("Digite o nome do cliente da venda: ").strip()
+        for venda in vendas:
+            if (nomeClienteVenda.lower() == venda[1].lower()):
+                print("\n--- VENDA ENCONTRADA ---")
+                print(f"ID: {venda[0]} | Cliente: {venda[1]} | Produto: {venda[2]} | Quantidade: {venda[3]} | Valor total: R$ {venda[4]}")
+                break
+        else:
+            print("\nNOME DO CLIENTE NÃO ENCONTRADO NA VENDA!")
+            print("Voltando para o Menu Vendas...")
+            return
+def atualizarVendas():
+    vendas = listarVendas()
+    print("Vendas cadastradas:")
+    for venda in vendas:
+        print(f"ID: {venda[0]} | Comprador: {venda[1]} | Produto: {venda[2]} | Total: R${venda[4]}")
+
+    idVenda = input("Digite o ID da venda que deseja atualizar: ").strip()
+
+    for venda in vendas:
+        if (int(idVenda) == int(venda[0])):
+            print("Venda encontrada")
+
+            print("Clientes existentes: ")
+            for cliente in listarClientes():
+                print(f"ID: {cliente[0]} | Nome: {cliente[1]} | Idade: {cliente[2]}")
+            novoCliente = input("Novo cliente: ")
+
+            for cliente in listarClientes():
+                if (novoCliente.lower() == cliente[1].lower()):
+                    venda[1] = cliente[1]
+                    break
+            else:
+                print("Cliente não encontrado")
+                return
+
+            novoProduto = input("Novo produto: ").strip()
+
+            for produto in listarProdutos():
+                if (novoProduto.lower() == produto[1].lower()):
+                    novaQnt = int(input("Nova quantidade: "))
+
+                    if novaQnt <= 0 or novaQnt > int(produto[2]):
+                        print("Quantidade inválida ou estoque insuficiente")
+                        return
+
+                    venda[2] = produto[1]
+                    venda[3] = novaQnt
+                    venda[4] = novaQnt * float(produto[3])
+                    break
+            else:
+                print("Produto não encontrado")
+                return
+
+            with open("vendas.txt", "w", encoding="utf-8") as arquivo:
+                for v in vendas:
+                    arquivo.write(f"{v[0]};{v[1]};{v[2]};{v[3]};{v[4]}\n")
+
+            print("Venda atualizada!")
+            break
+    else:
+        print("Venda não encontrada")
+
+def listarClientes():
+    clientes = []
+
+    with open("clientes.txt", "r", encoding="utf-8") as arquivo_listar_clientes:
+        for linha in arquivo_listar_clientes:
+            if (linha.strip()):
+                dados_cli = linha.split(";")
+                id_cli = int(dados_cli[0])
+                nome_cli = dados_cli[1]
+                idade_cli = dados_cli[2].strip()
+
+                clientes.append([id_cli, nome_cli, idade_cli])
+    
+    return (clientes)
 
 def cadastrarVendas():
     print("Clientes cadastrados:")
@@ -40,7 +161,11 @@ def cadastrarVendas():
         print(f"ID: {produto[0]} | Produto: {produto[1]} | Qnt: {produto[2]} | Valor: R$ {produto[3]}")
         
     nome_produto = input("Digite o nome do produto que vai comprar: ").strip()
+    '''if (nome_produto.lower() == produto[1].lower()):
+        produto[1] = nome_produto [1]'''
+    
 
+        
     listaV = listarVendas()
 
     if len(listaV) == 0:
@@ -51,23 +176,69 @@ def cadastrarVendas():
             if venda[0] > maior_id:
                 maior_id = venda[0]
         id_ven = maior_id + 1
+        
+        produtos = listarProdutos() 
 
     with open("vendas.txt", "a", encoding="utf-8") as arquivo_cadastrar_vendas:
-        for produto in listarProdutos():
+        for produto in produtos :
             if (nome_produto.lower() == produto[1].lower()):
                 print("Produto encontrado")
                 qnt_produto = int(input(f"Digite a quantidade de {nome_produto} você quer levar: "))
                 
                 if (qnt_produto > int(produto[2])):
-                    print("Não há estoque")
+                    print("Não há estoque suficiente")
+                    return
+                elif (qnt_produto <= 0):
+                    print("Quantidade inválida")
                     return
                 
-                arquivo_cadastrar_vendas.write(f"{id_ven};{produto[1]};{qnt_produto}\n")
+                arquivo_cadastrar_vendas.write(f"{id_ven};{cliente[1]};{produto[1]};{qnt_produto};{float(produto[3]) * qnt_produto}\n")
                 print("Venda cadastrada")
+                print(f"ID: {id_ven} | Cliente: {cliente[1]} | Produto: {produto[1]} | Quantidade: {qnt_produto} | Valor total: R$ {float(produto[3]) * qnt_produto}")
+
+                            
+                produto[2] = produto[2] - qnt_produto
+                with open("produtos.txt", "w", encoding="utf-8") as arquivo_produtos:
+                    for p in produtos:
+                        arquivo_produtos.write(f"{p[0]};{p[1]};{p[2]};{p[3]}\n")
+                            
                 break
         else:
             print("Produto não encontrado.")
+def excluirVendas():
+    vendas = listarVendas()
 
+    print("\n--- VENDAS CADASTRADAS ---")
+    for venda in vendas:
+        print(f"ID: {venda[0]} | Cliente: {venda[1]} | Produto: {venda[2]} | Quantidade: {venda[3]} | Valor total: R$ {venda[4]}")
+
+    idBuscvnd = input("\nDigite o ID da venda que deseja excluir: ").strip()
+    encontrado = False
+
+    for venda in vendas:
+        if str(venda[0]) == idBuscvnd:
+            encontrado = True
+            print(f"\nVenda encontrada: ID: {venda[0]} | Cliente: {venda[1]} | Produto: {venda[2]} | Quantidade: {venda[3]} | Valor total: R$ {venda[4]}")
+            
+            confirmacao = input("Tem certeza que deseja excluir esta venda? (s/n): ").strip().lower()
+            
+            if confirmacao == "s":
+                vendas.remove(venda)
+                
+                with open("vendas.txt", "w", encoding="utf-8") as arquivo_excluir_vendas:
+                    for v in vendas:
+                        arquivo_excluir_vendas.write(f"{v[0]};{v[1]};{v[2]};{v[3]};{v[4]}\n")
+                
+                print("Venda excluída com sucesso!")
+            else:
+                print("Exclusão cancelada.")
+            
+            break
+
+    if not encontrado:
+        print("Venda não encontrada.")
+    
+    
 def listarClientes():
     clientes = []
 
@@ -422,9 +593,7 @@ def excluirProdutos():
     idBusca = input("\nDigite o ID do produto que deseja excluir: ").strip()
     encontrado = False
 
-    # Percorre a lista de produtos item por item
     for p in produtos:
-        # Garante a comparação correta convertendo o ID para texto
         if str(p[0]) == idBusca:
             encontrado = True
             print(f"\nProduto encontrado: ID: {p[0]} | Nome: {p[1]} | Quantidade: {p[2]} | Valor unitário: R${p[3]}")
@@ -432,10 +601,8 @@ def excluirProdutos():
             confirmacao = input("Tem certeza que deseja excluir este produto? (s/n): ").strip().lower()
             
             if confirmacao == "s":
-                # Remove o produto encontrado da lista na memória
                 produtos.remove(p)
                 
-                # Reescreve o arquivo apenas com os produtos restantes
                 with open("produtos.txt", "w", encoding="utf-8") as arquivo:
                     for prod in produtos:
                         linha = f"{prod[0]};{prod[1]};{prod[2]};{prod[3]}\n"
@@ -463,55 +630,27 @@ def menuRelatorios():
 
 ----- RELATÓRIOS -----
 
-[1] - Relatório de Produtos
+[1] - Relatório de produtos em estoque
 
-[2] - Relatório de Clientes
-
-[3] - Relatório de Vendas
+[2] - Relatório de valor total das vendas realizadas
 
 [0] - Voltar para o menu principal""")
 
         escolha = input("Escolha:").strip()
 
+        if (escolha == "1"):                 
+            relatoriosProdutos()
 
-
-        if (escolha == "1"):
-
-                 
-
-             print("fazendo...")
-
-        elif (escolha == "2"):
-
-             
-
-             print("fazendo...")
-
-        elif (escolha == "3"):
-
-             
-
-             print("fazendo...")
+        elif (escolha == "2"):             
+            relatoriosVendas()
 
         elif (escolha == "0"):
-
-
-
             print("Voltando para o menu principal...")
-
             break
 
         else:
-
             print("Opção inválida.")
-
             continue
-
-   
-
-
-
-
 
 def menuVendas():
 
@@ -538,41 +677,22 @@ def menuVendas():
         if (escolha == "1"):
             cadastrarVendas()
 
-
-
         elif (escolha == "2"):
-
-                print("fazendo...")
-
-
-
+            atualizarVendas()
+                
         elif (escolha == "3"):
-
-                print("fazendo...")
-
-
+            buscarVendas()
 
         elif (escolha == "4"):
-
-                print("fazendo...")  
-
-
+            excluirVendas()                 
 
         elif (escolha == "0"):
-
-                print("Voltando para o menu principal...")
-
-                break
+            print("Voltando para o menu principal...")
+            break
 
         else:
-
-                print("Opção inválida.")      
-
-                continue
-
-
-
-
+            print("Opção inválida.")      
+            continue
 
 def menuClientes():
     escolha = ""
@@ -582,9 +702,13 @@ def menuClientes():
 ----- CLIENTES -----
 
 [1] - Cadastrar
+
 [2] - Buscar
+
 [3] - Atualizar
+
 [4] - Excluir
+
 [0] - Voltar para o menu principal""")
         escolha = input("Escolha: ").strip()
 
@@ -633,43 +757,23 @@ def menuProdutos():
         escolha = input("Escolha: ").strip()
 
         if (escolha == "1"):
-
             cadastrarProdutos()
 
-       
-
         elif (escolha == "2"):
-
             buscarProdutos()
 
-
-
         elif (escolha == "3"):
-
             atualizarProdutos()
 
-
-
         elif (escolha == "4"):
-
             excluirProdutos()
-
-
-
            
-
         elif (escolha == "0"):
-
-
-
             print("Voltando para o menu principal...")
-
             break
 
         else:
-
             print("Opção inválida.")      
-
             continue  
 
 
@@ -703,43 +807,24 @@ def menuPrincipal():
         escolha = input("Escolha: ").strip()
 
         if (escolha == "1"):
-
-
-
             menuProdutos()
 
         elif (escolha == "2"):
-
-
-
             menuClientes()
 
         elif (escolha == "3"):
-
-
-
             menuVendas()
 
         elif (escolha == "4"):
-
-
-
             menuRelatorios()
 
         elif(escolha == "0"):
-
-
-
             print("Saindo do programa...")
-
             break
 
         else:
-
             print("Opção inválida.")
-
-
+            continue
 
 menuPrincipal()
-
 print("Programa finalizado.")
