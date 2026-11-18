@@ -1,2 +1,2 @@
-1;Arroz;0;10.0
-2;Feijão;10;10.0
+1;Coca cola;10;10.5
+2;Monster;20;12.5

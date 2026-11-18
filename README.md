@@ -1,10 +1,1 @@
-# ADEGA
-
-git commit -m "explicação do que você fez"
-
-git push --set-upstream origin main
-
-flavio e gustavo
-
-vamo tirar 10
-nosso projeto e uma adega 
+Nosso projeto simula uma adega que vende bebidas para as pessoas maiores de 18 anos, onde tem as funções de cadastrar, buscar, atualizar e excluir, seja em Produtos, Clientes e Vendas. O nosso relatório imprime todos os produtos em estoque, as vendas, e o valor total das vendas que foram realizadas. Espero que gostem!

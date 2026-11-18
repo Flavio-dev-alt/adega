@@ -19,19 +19,80 @@ def relatoriosVendas():
 def listarVendas():
     vendas = []
 
-    with open("vendas.txt", "r", encoding="utf-8") as arquivo_listar_vendas:
-        for linha in arquivo_listar_vendas:
+    with open("vendas.txt", "r", encoding="utf-8") as arquivoListarVendas:
+        for linha in arquivoListarVendas:
             if (linha.strip()):
-                dados_venda = linha.split(";")
-                id_ven = int(dados_venda[0])
-                nome_cli_ven = dados_venda[1]
-                produto_ven = dados_venda[2]
-                qnt_produto_ven = int(dados_venda[3])
-                valor_total_ven = float(dados_venda[4])
+                dadosVenda = linha.split(";")
+                idVenda = int(dadosVenda[0])
+                nomeClienteVen = dadosVenda[1]
+                produtoVen = dadosVenda[2]
+                qntProdutoVen = int(dadosVenda[3])
+                valorTotalVen = float(dadosVenda[4])
 
-                vendas.append([id_ven, nome_cli_ven, produto_ven, qnt_produto_ven, valor_total_ven])
+                vendas.append([idVenda, nomeClienteVen, produtoVen, qntProdutoVen, valorTotalVen])
 
     return (vendas)
+
+def cadastrarVendas():
+    print("Clientes cadastrados:")
+    for cliente in listarClientes():
+        print(f"ID: {cliente[0]} | Nome: {cliente[1]} | Idade: {cliente[2]}")
+        
+    idCliente = input("Digite o ID do cliente que vai comprar: ").strip()
+    
+    for cliente in listarClientes():
+        if (int(idCliente) == int(cliente[0])):
+            print("Cliente encontrado")
+            break
+    else:
+        print("Cliente não encontrado")
+        return 
+
+    print("Produtos:")
+    for produto in listarProdutos():
+        print(f"ID: {produto[0]} | Produto: {produto[1]} | Qnt: {produto[2]} | Valor: R$ {produto[3]}")
+        
+    nomeProduto = input("Digite o nome do produto que vai comprar: ").strip()   
+
+    listaDasVen = listarVendas()
+
+    if len(listaDasVen) == 0:
+        idVenda = 1
+    else:
+        maiorId = 0
+        for venda in listaDasVen:
+            if venda[0] > maiorId:
+                maiorId = venda[0]
+        idVenda = maiorId + 1
+        
+    produtos = listarProdutos() 
+
+    with open("vendas.txt", "a", encoding="utf-8") as arquivoCadasVen:
+        for produto in produtos :
+            if (nomeProduto.lower() == produto[1].lower()):
+                print("Produto encontrado")
+                qntProduto = int(input(f"Digite a quantidade de {nomeProduto} você quer levar: "))
+                
+                if (qntProduto > int(produto[2])):
+                    print("Não há estoque suficiente")
+                    return
+                elif (qntProduto <= 0):
+                    print("Quantidade inválida")
+                    return
+                
+                arquivoCadasVen.write(f"{idVenda};{cliente[1]};{produto[1]};{qntProduto};{float(produto[3]) * qntProduto}\n")
+                print("Venda cadastrada")
+                print(f"ID: {idVenda} | Cliente: {cliente[1]} | Produto: {produto[1]} | Quantidade: {qntProduto} | Valor total: R$ {float(produto[3]) * qntProduto}")
+
+                            
+                produto[2] = produto[2] - qntProduto
+                with open("produtos.txt", "w", encoding="utf-8") as arquivoCadasPro:
+                    for p in produtos:
+                        arquivoCadasPro.write(f"{p[0]};{p[1]};{p[2]};{p[3]}\n")
+                            
+                break
+        else:
+            print("Produto não encontrado.")
 
 def buscarVendas():
     print("""
@@ -74,6 +135,7 @@ def buscarVendas():
             print("\nNOME DO CLIENTE NÃO ENCONTRADO NA VENDA!")
             print("Voltando para o Menu Vendas...")
             return
+        
 def atualizarVendas():
     vendas = listarVendas()
     print("Vendas cadastradas:")
@@ -126,85 +188,6 @@ def atualizarVendas():
     else:
         print("Venda não encontrada")
 
-def listarClientes():
-    clientes = []
-
-    with open("clientes.txt", "r", encoding="utf-8") as arquivo_listar_clientes:
-        for linha in arquivo_listar_clientes:
-            if (linha.strip()):
-                dados_cli = linha.split(";")
-                id_cli = int(dados_cli[0])
-                nome_cli = dados_cli[1]
-                idade_cli = dados_cli[2].strip()
-
-                clientes.append([id_cli, nome_cli, idade_cli])
-    
-    return (clientes)
-
-def cadastrarVendas():
-    print("Clientes cadastrados:")
-    for cliente in listarClientes():
-        print(f"ID: {cliente[0]} | Nome: {cliente[1]} | Idade: {cliente[2]}")
-        
-    id_cliente = input("Digite o ID do cliente que vai comprar: ").strip()
-    
-    for cliente in listarClientes():
-        if (int(id_cliente) == int(cliente[0])):
-            print("Cliente encontrado")
-            break
-    else:
-        print("Cliente não encontrado")
-        return 
-
-    print("Produtos:")
-    for produto in listarProdutos():
-        print(f"ID: {produto[0]} | Produto: {produto[1]} | Qnt: {produto[2]} | Valor: R$ {produto[3]}")
-        
-    nome_produto = input("Digite o nome do produto que vai comprar: ").strip()
-    '''if (nome_produto.lower() == produto[1].lower()):
-        produto[1] = nome_produto [1]'''
-    
-
-        
-    listaV = listarVendas()
-
-    if len(listaV) == 0:
-        id_ven = 1
-    else:
-        maior_id = 0
-        for venda in listaV:
-            if venda[0] > maior_id:
-                maior_id = venda[0]
-        id_ven = maior_id + 1
-        
-        produtos = listarProdutos() 
-
-    with open("vendas.txt", "a", encoding="utf-8") as arquivo_cadastrar_vendas:
-        for produto in produtos :
-            if (nome_produto.lower() == produto[1].lower()):
-                print("Produto encontrado")
-                qnt_produto = int(input(f"Digite a quantidade de {nome_produto} você quer levar: "))
-                
-                if (qnt_produto > int(produto[2])):
-                    print("Não há estoque suficiente")
-                    return
-                elif (qnt_produto <= 0):
-                    print("Quantidade inválida")
-                    return
-                
-                arquivo_cadastrar_vendas.write(f"{id_ven};{cliente[1]};{produto[1]};{qnt_produto};{float(produto[3]) * qnt_produto}\n")
-                print("Venda cadastrada")
-                print(f"ID: {id_ven} | Cliente: {cliente[1]} | Produto: {produto[1]} | Quantidade: {qnt_produto} | Valor total: R$ {float(produto[3]) * qnt_produto}")
-
-                            
-                produto[2] = produto[2] - qnt_produto
-                with open("produtos.txt", "w", encoding="utf-8") as arquivo_produtos:
-                    for p in produtos:
-                        arquivo_produtos.write(f"{p[0]};{p[1]};{p[2]};{p[3]}\n")
-                            
-                break
-        else:
-            print("Produto não encontrado.")
 def excluirVendas():
     vendas = listarVendas()
 
@@ -223,13 +206,23 @@ def excluirVendas():
             confirmacao = input("Tem certeza que deseja excluir esta venda? (s/n): ").strip().lower()
             
             if confirmacao == "s":
+                produtos = listarProdutos()
+                for p in produtos:
+                    if p[1].lower() == venda[2].lower():
+                        p[2] += int(venda[3])
+                        break
+                
+                with open("produtos.txt", "w", encoding="utf-8") as arquivoCadasPro:
+                    for p in produtos:
+                        arquivoCadasPro.write(f"{p[0]};{p[1]};{p[2]};{p[3]}\n")
+
                 vendas.remove(venda)
                 
-                with open("vendas.txt", "w", encoding="utf-8") as arquivo_excluir_vendas:
+                with open("vendas.txt", "w", encoding="utf-8") as arquivoExVenda:
                     for v in vendas:
-                        arquivo_excluir_vendas.write(f"{v[0]};{v[1]};{v[2]};{v[3]};{v[4]}\n")
+                        arquivoExVenda.write(f"{v[0]};{v[1]};{v[2]};{v[3]};{v[4]}\n")
                 
-                print("Venda excluída com sucesso!")
+                print("Venda excluída!")
             else:
                 print("Exclusão cancelada.")
             
@@ -237,25 +230,24 @@ def excluirVendas():
 
     if not encontrado:
         print("Venda não encontrada.")
-    
-    
+      
 def listarClientes():
     clientes = []
 
-    with open("clientes.txt", "r", encoding="utf-8") as arquivo_listar_clientes:
-        for linha in arquivo_listar_clientes:
+    with open("clientes.txt", "r", encoding="utf-8") as arquivoListarCli:
+        for linha in arquivoListarCli:
             if (linha.strip()):
-                dados_cli = linha.split(";")
-                id_cli = int(dados_cli[0])
-                nome_cli = dados_cli[1]
-                idade_cli = dados_cli[2].strip()
+                dadosCli = linha.split(";")
+                idCli = int(dadosCli[0])
+                nomeCli = dadosCli[1]
+                idadeCli = dadosCli[2].strip()
 
-                clientes.append([id_cli, nome_cli, idade_cli])
+                clientes.append([idCli, nomeCli, idadeCli])
     
     return (clientes)
 
 def cadastrarClientes():
-    with open("clientes.txt", "a", encoding="utf-8") as arquivo_cadastrar_clientes:
+    with open("clientes.txt", "a", encoding="utf-8") as arquivoCadasCli:
         nome = input("Nome do cliente: ")
         idade = int(input(f"Idade do(a) {nome}: "))
         if (idade < 18):
@@ -263,19 +255,19 @@ def cadastrarClientes():
             print("Voltando para o Menu Clientes...")
             return
 
-        listaC = listarClientes()
+        listaDosCl = listarClientes()
 
-        if len(listaC) == 0:
-            id_cliente = 1
+        if len(listaDosCl) == 0:
+            idCliente = 1
         else:
-            maior_id = 0
-            for cliente in listaC:
-                if cliente[0] > maior_id:
-                    maior_id = cliente[0]
-            id_cliente = maior_id + 1
+            maiorId = 0
+            for cliente in listaDosCl:
+                if cliente[0] > maiorId:
+                    maiorId = cliente[0]
+            idCliente = maiorId + 1
                 
-        arquivo_cadastrar_clientes.write(f"{id_cliente};{nome};{idade}\n")
-        print(f"\nCliente '{nome}' cadastrado com sucesso! (ID: {id_cliente})")
+        arquivoCadasCli.write(f"{idCliente};{nome};{idade}\n")
+        print(f"\nCliente '{nome}' cadastrado com sucesso! (ID: {idCliente})")
 
 def buscarClientes():
     print("""
@@ -348,9 +340,9 @@ def atualizarClientes():
         print("Voltando para o Menu Clientes...")
         return
 
-    with open("clientes.txt", "w", encoding="utf-8") as arquivo_atualizar_clientes:
+    with open("clientes.txt", "w", encoding="utf-8") as arquivoAtualiCli:
         for cliente in clientes:
-            arquivo_atualizar_clientes.write(f"{cliente[0]};{cliente[1]};{cliente[2]}\n")
+            arquivoAtualiCli.write(f"{cliente[0]};{cliente[1]};{cliente[2]}\n")
             
             
 def excluirClientes():
@@ -373,9 +365,9 @@ def excluirClientes():
             if confirmacao == "s":
                 clientes.remove(cliente)
                 
-                with open("clientes.txt", "w", encoding="utf-8") as arquivo_excluir_clientes:
+                with open("clientes.txt", "w", encoding="utf-8") as arquivoExCli:
                     for cli in clientes:
-                        arquivo_excluir_clientes.write(f"{cli[0]};{cli[1]};{cli[2]}\n")
+                        arquivoExCli.write(f"{cli[0]};{cli[1]};{cli[2]}\n")
                 
                 print("Cliente excluído com sucesso!")
             else:
@@ -386,7 +378,6 @@ def excluirClientes():
     if not encontrado:
         print("Cliente não encontrado.")
 
-#ESSA FUNÇÃO LISTA OS PRODUTOS CADASTRADOS NO ARQUIVO "produtos.txt" E RETORNA UMA LISTA COM OS DADOS DE CADA PRODUTO.
 def listarProdutos():
     produtos = []
 
@@ -398,11 +389,9 @@ def listarProdutos():
 
             if linha.strip():
 
-               # print(linha.strip())
-
                 dados = linha.split(";")
 
-                id_p = int(dados[0])
+                idProduto = int(dados[0])
 
                 nome = dados[1]
 
@@ -410,7 +399,7 @@ def listarProdutos():
 
                 valor = float(dados[3])
 
-                produtos.append([id_p, nome, qnt, valor])
+                produtos.append([idProduto, nome, qnt, valor])
 
     return (produtos)
 
@@ -418,18 +407,17 @@ def listarProdutos():
 
 def cadastrarProdutos():
     produto = input("Digite o nome do produto: ").strip()
-    qnt_ProdutoStr = input("Quantidade do produto: ").strip()
+    qntProdutoStr = input("Quantidade do produto: ").strip()
     
-    if qnt_ProdutoStr == "":
+    if qntProdutoStr == "":
         print("Quantidade inválida.")
         return
         
-    qntProduto = int(qnt_ProdutoStr)
+    qntProduto = int(qntProdutoStr)
     if qntProduto < 20:
         print("A quantidade mínima de produtos é 20. Voltando para o Menu Produtos.")
         return
 
-    # Replace previne erro se o usuário digitar vírgula no lugar de ponto
     valorUniStr = input("Valor unitário do produto: R$").strip().replace(",", ".")
     if valorUniStr == "":
         print("Valor inválido.")
@@ -440,19 +428,18 @@ def cadastrarProdutos():
     listaP = listarProdutos()
 
     if len(listaP) == 0:
-        id_produto = 1
+        idProdutoroduto = 1
     else:
-        maior_id = 0
+        maiorId = 0
         for p in listaP:
-            if p[0] > maior_id:
-                maior_id = p[0]
-        id_produto = maior_id + 1
+            if p[0] > maiorId:
+                maiorId = p[0]
+        idProdutoroduto = maiorId + 1
     
-    # ABRE O ARQUIVO SÓ NO FINAL PARA SALVAR
     with open("produtos.txt", "a", encoding="utf-8") as arquivoProdutos:
-        arquivoProdutos.write(f"{id_produto};{produto};{qntProduto};{valorUni}\n")
+        arquivoProdutos.write(f"{idProdutoroduto};{produto};{qntProduto};{valorUni}\n")
 
-    print(f"\nProduto '{produto}' cadastrado com sucesso! (ID: {id_produto})")
+    print(f"\nProduto '{produto}' cadastrado com sucesso! (ID: {idProdutoroduto})")
 
 
 def buscarProdutos():
@@ -515,74 +502,52 @@ def buscarProdutos():
    
 
 def atualizarProdutos():
-    
     produtos = listarProdutos()
 
     print(""" \n---PRODUTOS CADRASTADOS---""")
-    
     for produto in produtos:
-
         print(f"ID: {produto[0]} | Nome: {produto[1]} | Quantidade: {produto[2]} | Valor unitário: R${produto[3]}")
 
     idBusca = input("Digite o ID do produto que deseja atualizar: ").strip()        
-
     encontrado = False
 
     for produto in produtos:
-
         dados = produto
-
         if str(dados[0]) == idBusca:
-
             encontrado = True
-
             
             print(f"\nProduto encontrado : ID: {dados[0]} | Nome: {dados[1]} | Quantidade: {dados[2]} | Valor unitario: R${dados[3]}")
-
             
             novoNome = input(" Digite o novo nome do produto (ou aperte enter para manter o atual): ").strip()
-
             novaQuantidade = input("Digite a nova quantidade do produto (ou aperte enter para manter a atual): ")
             if novaQuantidade == "":
                 novaQuantidade = dados[2]
-            if int(novaQuantidade) <20:
+            if int(novaQuantidade) < 20:
                 print("A quantidade mínima de produtos é 20. voltando para o Menu Produtos.")
                 return
 
             novoValor = input("Digite o novo valor unitário do produto (ou aperte enter para manter o atual): ").strip()
 
             if novoNome:
-                
-                    dados[1] = novoNome
+                dados[1] = novoNome
 
             if novaQuantidade:
-                
-                     dados[2] = int(novaQuantidade)
-            if novoValor:
-                
+                dados[2] = int(novaQuantidade)
 
-                    dados[3] = novoValor
+            if novoValor:
+                dados[3] = float(novoValor)
             break
 
     if not encontrado:
-
         print("Produto não encontrado.")
-
         return
 
-
-
     with open("produtos.txt", "w", encoding="utf-8") as arquivo:
-
         for produto in produtos:
-
             arquivo.write(f"{produto[0]};{produto[1]};{produto[2]};{produto[3]}\n")
-
         print("Produto atualizado com sucesso!")
 
      
-
-
 def excluirProdutos():
     produtos = listarProdutos()
 
