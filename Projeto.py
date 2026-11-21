@@ -1,6 +1,9 @@
-#adega ="c:\\Users\\gusta\\Downloads\\Projeto.py"
+adega ="c:\\Users\\gusta\\Downloads\\Projeto.py"
 
-arquivo = open("adega", "a", encoding="utf-8")
+arquivo = open(adega, "a", encoding="utf-8")
+open("produtos.txt", "a", encoding="utf-8").close()
+open("clientes.txt", "a", encoding="utf-8").close()
+open("vendas.txt", "a", encoding="utf-8").close()
 
 def relatoriosProdutos():
     print("Produtos em estoque:")
@@ -135,12 +138,20 @@ def buscarVendas():
             print("\nNOME DO CLIENTE NÃO ENCONTRADO NA VENDA!")
             print("Voltando para o Menu Vendas...")
             return
+
+    elif (escolha == "0"):
+        print("Voltando para o Menu Vendas...")
+        return
+
+    else:
+        print("Opção inválida.")
+        return
         
 def atualizarVendas():
     vendas = listarVendas()
     print("Vendas cadastradas:")
     for venda in vendas:
-        print(f"ID: {venda[0]} | Comprador: {venda[1]} | Produto: {venda[2]} | Total: R${venda[4]}")
+        print(f"ID: {venda[0]} | Comprador: {venda[1]} | Produto: {venda[2]} | Qnt: {venda[3]} | Total: R${venda[4]}")
 
     idVenda = input("Digite o ID da venda que deseja atualizar: ").strip()
 
@@ -148,42 +159,49 @@ def atualizarVendas():
         if (int(idVenda) == int(venda[0])):
             print("Venda encontrada")
 
-            print("Clientes existentes: ")
-            for cliente in listarClientes():
-                print(f"ID: {cliente[0]} | Nome: {cliente[1]} | Idade: {cliente[2]}")
-            novoCliente = input("Novo cliente: ")
+            produtoAntigo = venda[2]
+            qntAntiga = int(venda[3])
 
-            for cliente in listarClientes():
-                if (novoCliente.lower() == cliente[1].lower()):
-                    venda[1] = cliente[1]
-                    break
-            else:
-                print("Cliente não encontrado")
-                return
+            novoCliente = input("Novo cliente: ").strip()
+            if novoCliente !="":
+                venda[1] = novoCliente
 
             novoProduto = input("Novo produto: ").strip()
+            
+            produtos = listarProdutos()
+            
+            for p in produtos:
+                if p[1].lower() == produtoAntigo.lower():
+                    p[2] = p[2] + qntAntiga
+                    break
 
-            for produto in listarProdutos():
-                if (novoProduto.lower() == produto[1].lower()):
+            for produto in produtos:
+                if (novoProduto.lower() == produto[1].strip().lower()):
                     novaQnt = int(input("Nova quantidade: "))
 
                     if novaQnt <= 0 or novaQnt > int(produto[2]):
                         print("Quantidade inválida ou estoque insuficiente")
                         return
 
-                    venda[2] = produto[1]
+                    venda[2] = produto[1].strip()
                     venda[3] = novaQnt
                     venda[4] = novaQnt * float(produto[3])
+                    
+                    produto[2] = produto[2] - novaQnt
                     break
             else:
                 print("Produto não encontrado")
                 return
 
-            with open("vendas.txt", "w", encoding="utf-8") as arquivo:
+            with open("vendas.txt", "w", encoding="utf-8") as arquivoVendas:
                 for v in vendas:
-                    arquivo.write(f"{v[0]};{v[1]};{v[2]};{v[3]};{v[4]}\n")
+                    arquivoVendas.write(f"{v[0]};{v[1]};{v[2]};{v[3]};{v[4]}\n")
 
-            print("Venda atualizada!")
+            with open("produtos.txt", "w", encoding="utf-8") as arquivoProdutos:
+                for p in produtos:
+                    arquivoProdutos.write(f"{p[0]};{p[1]};{p[2]};{p[3]}\n")
+
+            print("Venda atualizada e estoque sincronizado com sucesso!")
             break
     else:
         print("Venda não encontrada")
@@ -380,27 +398,15 @@ def excluirClientes():
 
 def listarProdutos():
     produtos = []
-
-    with open("produtos.txt", "r", encoding="utf-8") as arquivo:
-
-        
-
+    with open("produtos.txt", "r", encoding="utf-8") as arquivo:        
         for linha in arquivo:
-
             if linha.strip():
-
                 dados = linha.split(";")
-
                 idProduto = int(dados[0])
-
                 nome = dados[1]
-
                 qnt = int(dados[2])
-
                 valor = float(dados[3])
-
                 produtos.append([idProduto, nome, qnt, valor])
-
     return (produtos)
 
 
@@ -586,11 +592,8 @@ def excluirProdutos():
 
 
 def menuRelatorios():
-
     escolha= ""
-
     while (escolha != "0"):
-
         print("""
 
 ----- RELATÓRIOS -----
