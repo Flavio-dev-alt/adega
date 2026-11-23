@@ -163,7 +163,7 @@ def atualizarVendas():
             qntAntiga = int(venda[3])
 
             novoCliente = input("Novo cliente: ").strip()
-            if novoCliente !="":
+            if (novoCliente != ""):
                 venda[1] = novoCliente
 
             novoProduto = input("Novo produto: ").strip()
@@ -171,15 +171,15 @@ def atualizarVendas():
             produtos = listarProdutos()
             
             for p in produtos:
-                if p[1].lower() == produtoAntigo.lower():
-                    p[2] = p[2] + qntAntiga
+                if (p[1].lower() == produtoAntigo.lower()):
+                    p[2] += qntAntiga
                     break
 
             for produto in produtos:
                 if (novoProduto.lower() == produto[1].strip().lower()):
                     novaQnt = int(input("Nova quantidade: "))
 
-                    if novaQnt <= 0 or novaQnt > int(produto[2]):
+                    if (novaQnt <= 0) or (novaQnt > int(produto[2])):
                         print("Quantidade inválida ou estoque insuficiente")
                         return
 
@@ -187,7 +187,7 @@ def atualizarVendas():
                     venda[3] = novaQnt
                     venda[4] = novaQnt * float(produto[3])
                     
-                    produto[2] = produto[2] - novaQnt
+                    produto[2] -= novaQnt
                     break
             else:
                 print("Produto não encontrado")
@@ -217,16 +217,16 @@ def excluirVendas():
     encontrado = False
 
     for venda in vendas:
-        if str(venda[0]) == idBuscvnd:
+        if (str(venda[0]) == idBuscvnd):
             encontrado = True
             print(f"\nVenda encontrada: ID: {venda[0]} | Cliente: {venda[1]} | Produto: {venda[2]} | Quantidade: {venda[3]} | Valor total: R$ {venda[4]}")
             
             confirmacao = input("Tem certeza que deseja excluir esta venda? (s/n): ").strip().lower()
             
-            if confirmacao == "s":
+            if (confirmacao == "s"):
                 produtos = listarProdutos()
                 for p in produtos:
-                    if p[1].lower() == venda[2].lower():
+                    if (p[1].lower() == venda[2].lower()):
                         p[2] += int(venda[3])
                         break
                 
@@ -246,7 +246,7 @@ def excluirVendas():
             
             break
 
-    if not encontrado:
+    if (not encontrado):
         print("Venda não encontrada.")
       
 def listarClientes():
@@ -275,12 +275,12 @@ def cadastrarClientes():
 
         listaDosCl = listarClientes()
 
-        if len(listaDosCl) == 0:
+        if (len(listaDosCl) == 0):
             idCliente = 1
         else:
             maiorId = 0
             for cliente in listaDosCl:
-                if cliente[0] > maiorId:
+                if (cliente[0] > maiorId):
                     maiorId = cliente[0]
             idCliente = maiorId + 1
                 
@@ -374,13 +374,13 @@ def excluirClientes():
     encontrado = False
 
     for cliente in clientes:
-        if str(cliente[0]) == idBuscaCliente:
+        if (str(cliente[0]) == idBuscaCliente):
             encontrado = True
             print(f"\nCliente encontrado: ID: {cliente[0]} | Nome: {cliente[1]} | Idade: {cliente[2]}")
 
             confirmacao = input("Tem certeza que deseja excluir este cliente? (s/n): ").strip().lower()
             
-            if confirmacao == "s":
+            if (confirmacao == "s"):
                 clientes.remove(cliente)
                 
                 with open("clientes.txt", "w", encoding="utf-8") as arquivoExCli:
@@ -393,14 +393,14 @@ def excluirClientes():
             
             break
 
-    if not encontrado:
+    if (not encontrado):
         print("Cliente não encontrado.")
 
 def listarProdutos():
     produtos = []
     with open("produtos.txt", "r", encoding="utf-8") as arquivo:        
         for linha in arquivo:
-            if linha.strip():
+            if (linha.strip()):
                 dados = linha.split(";")
                 idProduto = int(dados[0])
                 nome = dados[1]
@@ -415,17 +415,17 @@ def cadastrarProdutos():
     produto = input("Digite o nome do produto: ").strip()
     qntProdutoStr = input("Quantidade do produto: ").strip()
     
-    if qntProdutoStr == "":
+    if (qntProdutoStr == ""):
         print("Quantidade inválida.")
         return
         
     qntProduto = int(qntProdutoStr)
-    if qntProduto < 20:
+    if (qntProduto < 20):
         print("A quantidade mínima de produtos é 20. Voltando para o Menu Produtos.")
         return
 
     valorUniStr = input("Valor unitário do produto: R$").strip().replace(",", ".")
-    if valorUniStr == "":
+    if (valorUniStr == ""):
         print("Valor inválido.")
         return
         
@@ -433,12 +433,12 @@ def cadastrarProdutos():
     
     listaP = listarProdutos()
 
-    if len(listaP) == 0:
+    if (len(listaP) == 0):
         idProdutoroduto = 1
     else:
         maiorId = 0
         for p in listaP:
-            if p[0] > maiorId:
+            if (p[0] > maiorId):
                 maiorId = p[0]
         idProdutoroduto = maiorId + 1
     
@@ -476,7 +476,7 @@ def buscarProdutos():
     elif (escolha == "2"):
         idProduto = (input("Digite o ID do produto: ").strip())
         for produto in listarProdutos():
-            if str(produto[0]) == idProduto:
+            if (str(produto[0]) == idProduto):
                 print("\n--- PRODUTO ENCONTRADO ---")
                 print(f"ID: {produto[0]} | Nome: {produto[1]} | Quantidade: {produto[2]} | Valor unitário: R${produto[3]}")
                 break
@@ -489,7 +489,7 @@ def buscarProdutos():
     elif (escolha == "3"):
         nomeProduto = input("Digite o nome do produto: ").strip()
         for produto in listarProdutos():
-            if produto[1].lower() == nomeProduto.lower():
+            if (produto[1].lower() == nomeProduto.lower()):
                 print("\n--- PRODUTO ENCONTRADO ---")
                 print(f"ID: {produto[0]} | Nome: {produto[1]} | Quantidade: {produto[2]} | Valor unitário: R${produto[3]}")
                 break
@@ -519,32 +519,32 @@ def atualizarProdutos():
 
     for produto in produtos:
         dados = produto
-        if str(dados[0]) == idBusca:
+        if (str(dados[0]) == idBusca):
             encontrado = True
             
             print(f"\nProduto encontrado : ID: {dados[0]} | Nome: {dados[1]} | Quantidade: {dados[2]} | Valor unitario: R${dados[3]}")
             
             novoNome = input(" Digite o novo nome do produto (ou aperte enter para manter o atual): ").strip()
             novaQuantidade = input("Digite a nova quantidade do produto (ou aperte enter para manter a atual): ")
-            if novaQuantidade == "":
+            if (novaQuantidade == ""):
                 novaQuantidade = dados[2]
-            if int(novaQuantidade) < 20:
+            if (int(novaQuantidade) < 20):
                 print("A quantidade mínima de produtos é 20. voltando para o Menu Produtos.")
                 return
 
             novoValor = input("Digite o novo valor unitário do produto (ou aperte enter para manter o atual): ").strip()
 
-            if novoNome:
+            if (novoNome):
                 dados[1] = novoNome
 
-            if novaQuantidade:
+            if (novaQuantidade):
                 dados[2] = int(novaQuantidade)
 
-            if novoValor:
+            if (novoValor):
                 dados[3] = float(novoValor)
             break
 
-    if not encontrado:
+    if (not encontrado):
         print("Produto não encontrado.")
         return
 
@@ -565,13 +565,13 @@ def excluirProdutos():
     encontrado = False
 
     for p in produtos:
-        if str(p[0]) == idBusca:
+        if (str(p[0]) == idBusca):
             encontrado = True
             print(f"\nProduto encontrado: ID: {p[0]} | Nome: {p[1]} | Quantidade: {p[2]} | Valor unitário: R${p[3]}")
             
             confirmacao = input("Tem certeza que deseja excluir este produto? (s/n): ").strip().lower()
             
-            if confirmacao == "s":
+            if (confirmacao == "s"):
                 produtos.remove(p)
                 
                 with open("produtos.txt", "w", encoding="utf-8") as arquivo:
@@ -585,7 +585,7 @@ def excluirProdutos():
             
             break
 
-    if not encontrado:
+    if (not encontrado):
         print("Produto não encontrado.")
                  
 
