@@ -1,4 +1,5 @@
-# Sistema de Gerenciamento para Adega:
+#  Sistema de Gerenciamento para Adega
+
 ![Python](https://img.shields.io/badge/Python-3.x-blue?logo=python&logoColor=white)
 ![Status](https://img.shields.io/badge/Status-Concluído-brightgreen)
 
@@ -8,7 +9,7 @@ A ideia foi construir um sistema via terminal que ajude a organizar o estoque de
 
 ---
 
-# O que o sistema faz na prática?
+###  O que o sistema faz na prática?
 
 O sistema cobre o fluxo básico de um comércio, dividido em quatro módulos principais:
 
@@ -19,14 +20,14 @@ O sistema cobre o fluxo básico de um comércio, dividido em quatro módulos pri
 
 ---
 
-# O que eu usei para construir
+###  O que eu usei para construir:
 
 - **Python 3:** Toda a lógica, menus e validações foram escritos em Python puro, aplicando os conceitos aprendidos na disciplina.
 - **Arquivos de Texto (`.txt`):** Para garantir que os dados não fossem perdidos ao fechar o programa, utilizei manipulação de arquivos locais (`clientes.txt`, `produtos.txt` e `vendas.txt`) para simular a persistência de dados.
 
 ---
 
-#  O que eu aprendi fazendo esse projeto
+###  O que eu aprendi fazendo esse projeto:
 
 Desenvolver este sistema para a faculdade foi um marco importante no meu aprendizado. Os principais desafios superados foram:
 - **Lidar com dados persistentes:** Aprender a ler, escrever e atualizar linhas específicas dentro de arquivos `.txt` sem corromper as informações.
@@ -35,8 +36,10 @@ Desenvolver este sistema para a faculdade foi um marco importante no meu aprendi
 
 ---
 
-# Para testar na sua máquina:
+###  Para testar na sua máquina:
+
+Se quiser rodar o projeto aí no seu computador, é bem rápido:
 
 1. **Baixe o repositório:**
    ```bash
-   git clone [https://github.com/Flavio-dev-alt/adega.git](https://github.com/Flavio-dev-alt/adega.git)
+   git clone https://github.com/Flavio-dev-alt/adega.git
