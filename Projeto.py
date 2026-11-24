@@ -1,6 +1,3 @@
-adega ="c:\\Users\\gusta\\Downloads\\Projeto.py"
-
-arquivo = open(adega, "a", encoding="utf-8")
 open("produtos.txt", "a", encoding="utf-8").close()
 open("clientes.txt", "a", encoding="utf-8").close()
 open("vendas.txt", "a", encoding="utf-8").close()
