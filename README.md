@@ -38,8 +38,19 @@ Desenvolver este sistema para a faculdade foi um marco importante no meu aprendi
 
 ###  Para testar na sua máquina:
 
-Se quiser rodar o projeto aí no seu computador, é bem rápido:
+Se quiser rodar o projeto aí no seu computador, é só abrir o terminal e executar os comandos abaixo na sequência (precisa ter o Python instalado):
 
-1. **Baixe o repositório:**
-   ```bash
-   git clone https://github.com/Flavio-dev-alt/adega.git
+```bash
+git clone https://github.com/Flavio-dev-alt/adega.git
+cd adega
+python Projeto.py
+```
+
+---
+
+###  Sobre mim:
+
+Feito por **Flávio**. Se quiser trocar uma ideia sobre o código, dar alguma sugestão de melhoria ou conectar, me chame!
+
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/flavio-dev-alt/)
+[![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Flavio-dev-alt)
