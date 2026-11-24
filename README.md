@@ -26,7 +26,7 @@ O sistema cobre o fluxo básico de um comércio, dividido em quatro módulos pri
 
 ---
 
-# 🧠 O que eu aprendi fazendo esse projeto
+#  O que eu aprendi fazendo esse projeto
 
 Desenvolver este sistema para a faculdade foi um marco importante no meu aprendizado. Os principais desafios superados foram:
 - **Lidar com dados persistentes:** Aprender a ler, escrever e atualizar linhas específicas dentro de arquivos `.txt` sem corromper as informações.
